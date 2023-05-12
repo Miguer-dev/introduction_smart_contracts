@@ -1,0 +1,83 @@
+Tipos de variables:
+-bool
+-string
+-uint (enteros no negativos) / int (enteros pueden negativos).
+-address / address payable (Para que una dirección pueda recibir Ether).
+
+Variables globales:
+-block: Información del bloque actual de la transacción.
+-msg: Información de la llamada.
+-tx: Información de la transacción.
+
+Propiedades más comunes:
+-block.gaslimit: Límite de gas en el bloque actual
+-msg.data: Información de la llamada
+-msg.sender: Dirección de la llamada
+-msg.value: Número de wei enviado
+-tx.gasprice: Costo de gas de la transacción
+
+-------------------------------------------------------------------------
+
+Visibilidad:
+-public: default funciones,pueden ser accedidas tanto por fuera como por dentro del contrato.
+-private: solo podrán ser accedidas desde adentro del propio contrato.
+-internal: default variables, solo pueden ser accedidas por el mismo contrato o un contrato que deriva del mismo, contratos heredados.
+-external: solo puede ser accedidas desde llamadas de otros contratos. No puede leerse dentro del mismo contrato.
+
+Data Location: (string, array, struct y mapping)
+-storage: memoria persistente, será guardada dentro de la Blockchain.
+-memory: solo pueden ser usadas mientras se llama a una función. Después de esto, la misma se borrará. Puede modificarse mientras está en uso.
+-calldata: similar a memory, pero no se pueden modificar mientras estén en uso. Es buena práctica usar calldata para reducir el consumo de gas.
+
+*Las variables de estado del contrato son guardadas en el storage, mientras que los parámetros de una función son guardados en memory.
+
+-------------------------------------------------------------------------
+
+Estructura Funciones:
+function multiplication(int a, int b) returns(int) {
+    return a * b;
+}
+function multiplication(int a, int b) returns(int product) {
+    product = a * b;
+}
+
+Tipos:
+-view: Funciones que solo leen y devuelven dato, no realizan ningún tipo de lógica. No consumen gas (getters)
+
+function saludar(int a, int b) public view returns(string) {
+        return saludo;
+    }
+
+-pure: Funciones que siempre devuelven un valor de forma determinista. Realizan una tarea y devuelven siempre el mismo valor para una misma entrada. 
+Pero no modifican el valor de ninguna variable, o sea, no cambian el estado del contrato.
+
+function multiplication(int a, int b) public pure returns(int) {
+        return a * b;
+    }
+
+-payable: Funciones especiales capaces de enviar o recibir ETH.
+
+function sendETH(address payable receiver) public payable {
+        receiver.transfer(msg.value);
+    }
+
+---------------------------------------------------------------------------
+
+Functions Modifiers:
+Suelen ser la validación de datos o la restricción de acceso a una función.
+
+    // Modificador para validar que la llamada la realiza el dueño del contrato
+    modifier onlyOwner() {
+        require(msg.sender == owner, "No eres el owner");                               //en caso la condición no se cumpla, el require realizará un revert para volver atrás todos los cambios de estado del contrato por nosotros
+        _;                                                                              //indicarle al compilador de Solidity que continúe ejecutando el resto de la función si la condición se cumplió correctamente.
+    }
+
+    // Solo el dueño del proyecto puede cambiar al mismo
+    function changeOwner(address _newOwner) public onlyOwner {
+        owner = _newOwner;
+    }
+
+*Las operaciones en Solidity son atómicas, lo que quiere decir que se ejecuta correctamente cada una de las instrucciones o no se ejecuta ninguna.
+
+----------------------------------------------------------------------------
+
