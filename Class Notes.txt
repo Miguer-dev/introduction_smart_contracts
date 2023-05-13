@@ -68,8 +68,8 @@ Suelen ser la validación de datos o la restricción de acceso a una función.
 
     // Modificador para validar que la llamada la realiza el dueño del contrato
     modifier onlyOwner() {
-        require(msg.sender == owner, "No eres el owner");                               //en caso la condición no se cumpla, el require realizará un revert para volver atrás todos los cambios de estado del contrato por nosotros
-        _;                                                                              //indicarle al compilador de Solidity que continúe ejecutando el resto de la función si la condición se cumplió correctamente.
+        require(msg.sender == owner, "No eres el owner");                       //en caso la condición no se cumpla, el require realizará un revert para volver atrás todos los cambios de estado del contrato por nosotros
+        _;                                                                      //indicarle al compilador de Solidity que continúe ejecutando el resto de la función si la condición se cumplió correctamente.
     }
 
     // Solo el dueño del proyecto puede cambiar al mismo
@@ -81,3 +81,16 @@ Suelen ser la validación de datos o la restricción de acceso a una función.
 
 ----------------------------------------------------------------------------
 
+Events:
+Se utilizan para notificar cambios realizados en un contrato. Deben ser recibidos por medio de aplicaciones Web3 que se encuentren observando el contrato.
+
+event log(        //estructura del evento 
+    address sender, 
+    string message
+); 
+
+function sendMessage() public {          
+    emit log(msg.sender, "Este es el mensaje");      //disparar evento
+}
+
+---------------------------------------------------------------------------------

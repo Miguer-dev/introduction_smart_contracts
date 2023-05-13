@@ -21,12 +21,12 @@ contract CrowdFunding {
         owner = msg.sender;
     }   
 
-    modifier onlyOwner(){
+    modifier isOwner(){
         require(msg.sender == owner, "Only the owner can do this action");
         _;
     }
 
-    modifier ownerNotFunding(){
+    modifier isNotOwner(){
         require(msg.sender != owner, "The owner of the project cannot finance it");
         _;
     }
@@ -41,16 +41,31 @@ contract CrowdFunding {
         _;
     }
 
-    function fundProject () public  payable maxFundsReach closeFunding ownerNotFunding{
-        fundsWallet.transfer(msg.value);
+    event addedFunds(
+        uint amount,
+        address wallet,
+        uint date      
+    );
 
+    event changedState(
+        State newState,
+        uint date
+     );
+    
+
+    function fundProject () public  payable maxFundsReach closeFunding isNotOwner{
+        fundsWallet.transfer(msg.value);
+        emit addedFunds(msg.value, msg.sender, block.timestamp);
+        
         if(getFunds() > maxFunds){
                 currentState = State.CLOSE;
-        }            
+                emit changedState(currentState, block.timestamp);
+        }      
     }    
 
-    function changeProjectState(State newState) public onlyOwner{
+    function changeProjectState(State newState) public isOwner{
         currentState = newState;
+        emit changedState(currentState, block.timestamp);
     }
 
     function getState() public view  returns (State) {        
