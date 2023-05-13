@@ -93,4 +93,15 @@ function sendMessage() public {
     emit log(msg.sender, "Este es el mensaje");      //disparar evento
 }
 
+Errors:
+Función es similar a la de los eventos, con la diferencia de que estos pueden revertir los cambios de estado hecho.
+
+error SendError(string message);
+
+function doSomething() public {
+    revert SendError("Mensaje del error");
+}
+
+
+
 ---------------------------------------------------------------------------------

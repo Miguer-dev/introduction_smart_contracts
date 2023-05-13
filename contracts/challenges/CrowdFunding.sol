@@ -51,9 +51,17 @@ contract CrowdFunding {
         State newState,
         uint date
      );
-    
+
+    error sendError (
+        string message,        
+        uint date
+    );    
 
     function fundProject () public  payable maxFundsReach closeFunding isNotOwner{
+        if (msg.value == 0){
+            revert sendError("Contributions must be greater than 0", block.timestamp);
+        }
+
         fundsWallet.transfer(msg.value);
         emit addedFunds(msg.value, msg.sender, block.timestamp);
         
@@ -64,6 +72,10 @@ contract CrowdFunding {
     }    
 
     function changeProjectState(State newState) public isOwner{
+        if (newState == currentState) {
+            revert sendError("The current state is the same as the one you want to change to", block.timestamp);
+        }
+
         currentState = newState;
         emit changedState(currentState, block.timestamp);
     }
