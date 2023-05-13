@@ -41,6 +41,11 @@ contract CrowdFunding {
         _;
     }
 
+    modifier ceroFunds(){
+        require(msg.value != 0, "Contributions must be greater than 0.");              
+        _;
+    }    
+
     event addedFunds(
         uint amount,
         address wallet,
@@ -50,17 +55,9 @@ contract CrowdFunding {
     event changedState(
         State newState,
         uint date
-     );
+     ); 
 
-    error sendError (
-        string message,        
-        uint date
-    );    
-
-    function fundProject () public  payable maxFundsReach closeFunding isNotOwner{
-        if (msg.value == 0){
-            revert sendError("Contributions must be greater than 0", block.timestamp);
-        }
+    function fundProject () public  payable maxFundsReach closeFunding isNotOwner ceroFunds{        
 
         fundsWallet.transfer(msg.value);
         emit addedFunds(msg.value, msg.sender, block.timestamp);
@@ -72,10 +69,8 @@ contract CrowdFunding {
     }    
 
     function changeProjectState(State newState) public isOwner{
-        if (newState == currentState) {
-            revert sendError("The current state is the same as the one you want to change to", block.timestamp);
-        }
 
+        require(newState == currentState, "The current state is the same as the one you want to change to.");  
         currentState = newState;
         emit changedState(currentState, block.timestamp);
     }
