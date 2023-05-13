@@ -102,6 +102,18 @@ function doSomething() public {
     revert SendError("Mensaje del error");
 }
 
+---------------------------------------------------------------------------------
 
+struct Persona {
+    string nombre;
+    string apellido;
+    uint edad;
+}
+
+Persona p = Persona("Lionel", "Messi", 35);
+
+p.nombre;     // Lionel
+p.apellido;   // Messi
+p.edad;       // 35
 
 ---------------------------------------------------------------------------------
