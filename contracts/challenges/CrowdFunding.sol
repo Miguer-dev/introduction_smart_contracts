@@ -7,9 +7,11 @@ contract CrowdFunding {
     
     string public name;
     string public description;
+    mapping(address => uint) public balances;    
     address private owner;
     uint private maxFunds; //en ethers
     address payable private fundsWallet;
+
     State private currentState;
 
     constructor(string memory _name, string memory _description, uint _maxFunds, address payable _fundWallet) {       
@@ -61,11 +63,12 @@ contract CrowdFunding {
 
         fundsWallet.transfer(msg.value);
         emit addedFunds(msg.value, msg.sender, block.timestamp);
+        balances[msg.sender] += msg.value;
         
         if(getFunds() > maxFunds){
                 currentState = State.CLOSE;
                 emit changedState(currentState, block.timestamp);
-        }      
+        }     
     }    
 
     function changeProjectState(State newState) public isOwner{

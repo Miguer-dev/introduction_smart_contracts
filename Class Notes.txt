@@ -117,3 +117,29 @@ p.apellido;   // Messi
 p.edad;       // 35
 
 ---------------------------------------------------------------------------------
+
+Arrays:
+
+//longitud fija
+uint[3] numbers = [1, 2, 3];
+
+//longitud dinámica
+uint[] numbers;
+
+numbers[1] //acceder a elemento
+
+numbers.push(4)  //agrega elemento al final de array
+numbers.pop()    //borra el ultimo elemento del array  
+numbers.length   //longitud del array
+
+*Los métodos push y pop solo funcionan en los arrays dinámicos.
+
+Mapping:
+
+mapping(address => uint) public balances;
+
+mapping[direccion123] = 1000;
+mapping[direccion456] = 2000;
+mapping[direccion123] //1000
+
+----------------------------------------------------------------------------------
