@@ -11,7 +11,6 @@ contract CrowdFunding {
     address private owner;
     uint private maxFunds; //en ethers
     address payable private fundsWallet;
-
     State private currentState;
 
     constructor(string memory _name, string memory _description, uint _maxFunds, address payable _fundWallet) {       
@@ -73,7 +72,7 @@ contract CrowdFunding {
 
     function changeProjectState(State newState) public isOwner{
 
-        require(newState == currentState, "The current state is the same as the one you want to change to.");  
+        require(newState != currentState, "The current state is the same as the one you want to change to.");  
         currentState = newState;
         emit changedState(currentState, block.timestamp);
     }
