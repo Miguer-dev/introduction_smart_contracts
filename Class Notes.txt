@@ -1,13 +1,16 @@
+-------------------------------------------------------------------Variables------------------------------------------------------
 Tipos de variables:
 -bool
 -string
 -uint (enteros no negativos) / int (enteros pueden negativos).
 -address / address payable (Para que una dirección pueda recibir Ether).
 
+
 Variables globales:
 -block: Información del bloque actual de la transacción.
 -msg: Información de la llamada.
 -tx: Información de la transacción.
+
 
 Propiedades más comunes:
 -block.gaslimit: Límite de gas en el bloque actual
@@ -16,13 +19,13 @@ Propiedades más comunes:
 -msg.value: Número de wei enviado
 -tx.gasprice: Costo de gas de la transacción
 
--------------------------------------------------------------------------
 
 Visibilidad:
 -public: default funciones,pueden ser accedidas tanto por fuera como por dentro del contrato.
 -private: solo podrán ser accedidas desde adentro del propio contrato.
 -internal: default variables, solo pueden ser accedidas por el mismo contrato o un contrato que deriva del mismo, contratos heredados.
 -external: solo puede ser accedidas desde llamadas de otros contratos. No puede leerse dentro del mismo contrato.
+
 
 Data Location: (string, array, struct y mapping)
 -storage: memoria persistente, será guardada dentro de la Blockchain.
@@ -31,8 +34,7 @@ Data Location: (string, array, struct y mapping)
 
 *Las variables de estado del contrato son guardadas en el storage, mientras que los parámetros de una función son guardados en memory.
 
--------------------------------------------------------------------------
-
+-------------------------------------------------------------------Funciones------------------------------------------------------
 Estructura Funciones:
 function multiplication(int a, int b) returns(int) {
     return a * b;
@@ -40,6 +42,7 @@ function multiplication(int a, int b) returns(int) {
 function multiplication(int a, int b) returns(int product) {
     product = a * b;
 }
+
 
 Tipos:
 -view: Funciones que solo leen y devuelven dato, no realizan ningún tipo de lógica. No consumen gas (getters)
@@ -61,7 +64,6 @@ function sendETH(address payable receiver) public payable {
         receiver.transfer(msg.value);
     }
 
----------------------------------------------------------------------------
 
 Functions Modifiers:
 Suelen ser la validación de datos o la restricción de acceso a una función.
@@ -79,7 +81,7 @@ Suelen ser la validación de datos o la restricción de acceso a una función.
 
 *Las operaciones en Solidity son atómicas, lo que quiere decir que se ejecuta correctamente cada una de las instrucciones o no se ejecuta ninguna.
 
-----------------------------------------------------------------------------
+-------------------------------------------------------------------Eventos y Errores------------------------------------------------------
 
 Events:
 Se utilizan para notificar cambios realizados en un contrato. Deben ser recibidos por medio de aplicaciones Web3 que se encuentren observando el contrato.
@@ -102,7 +104,7 @@ function doSomething() public {
     revert SendError("Mensaje del error");
 }
 
----------------------------------------------------------------------------------
+-------------------------------------------------------------------Struct------------------------------------------------------
 
 struct Persona {
     string nombre;
@@ -116,7 +118,7 @@ p.nombre;     // Lionel
 p.apellido;   // Messi
 p.edad;       // 35
 
----------------------------------------------------------------------------------
+-------------------------------------------------------------------Array - Mapping------------------------------------------------------
 
 Arrays:
 
@@ -142,4 +144,26 @@ mapping[direccion123] = 1000;
 mapping[direccion456] = 2000;
 mapping[direccion123] //1000
 
-----------------------------------------------------------------------------------
+-------------------------------------------------------------------Token ERC-20------------------------------------------------------
+El estándar ERC-20 introduce tokens fungibles, es decir, tienen una propiedad que hace que cada token sea exactamente igual (en tipo y valor) que otro token.
+Si un contrato inteligente implementa los siguientes métodos y eventos, se puede llamar un contrato de token ERC-20 y, una vez implementado, será responsable 
+de realizar un seguimiento de los tokens creados en Ethereum:
+
+Functions:
+function name() public view returns (string)
+function symbol() public view returns (string)
+function decimals() public view returns (uint8)
+function totalSupply() public view returns (uint256)
+function balanceOf(address _owner) public view returns (uint256 balance)
+function transfer(address _to, uint256 _value) public returns (bool success)
+function transferFrom(address _from, address _to, uint256 _value) public returns (bool success)
+function approve(address _spender, uint256 _value) public returns (bool success)
+function allowance(address _owner, address _spender) public view returns (uint256 remaining)
+
+Events:
+event Transfer(address indexed _from, address indexed _to, uint256 _value)
+event Approval(address indexed _owner, address indexed _spender, uint256 _value)
+
+*https://ethereum.org/en/developers/docs/standards/tokens/erc-20/
+*https://eips.ethereum.org/EIPS/eip-20
+*https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol
