@@ -17,6 +17,7 @@ contract TokenERC20 {
         symbol = _symbol;
         decimals = _decimals;
         totalSupply = _totalSupply;
+        balances[msg.sender] = _totalSupply;
     }
 
     event Transfer(
@@ -55,12 +56,35 @@ contract TokenERC20 {
         return allowances[_owner][_spender];
     }
 
+    function transfer(address payable  _to, uint _value) public payable returns (bool success){
+        require(balances[msg.sender] >= _value, "Insufficient tokens");
+       
+        balances[msg.sender] -= _value;
+        balances[_to] += _value;
 
-    /*
-function transfer(address _to, uint256 _value) public returns (bool success)
-function transferFrom(address _from, address _to, uint256 _value) public returns (bool success)
-function approve(address _spender, uint256 _value) public returns (bool success)    
-    */
+        emit Transfer(msg.sender, _to, _value); 
+        
+        success = true;
+    }
 
+    function approve(address _spender, uint _value) public returns (bool success){
+        allowances[msg.sender][_spender] = _value;
+
+        emit Approval(msg.sender, _spender, _value); 
+
+        success = true;
+    }  
+
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success){
+        require(balances[_from] >= _value, "Insufficient tokens");
+        require(allowances[_from][msg.sender] >= _value, "You do not have permission to move this amount of tokens");
+        
+        balances[_from] -= _value;
+        balances[_to] += _value;
+
+        emit Transfer(_from, _to, _value); 
+        
+        success = true;
+    }
 
 }

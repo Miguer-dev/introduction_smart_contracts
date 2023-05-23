@@ -87,13 +87,16 @@ Events:
 Se utilizan para notificar cambios realizados en un contrato. Deben ser recibidos por medio de aplicaciones Web3 que se encuentren observando el contrato.
 
 event log(        //estructura del evento 
-    address sender, 
+    address indexed sender, 
     string message
 ); 
 
 function sendMessage() public {          
     emit log(msg.sender, "Este es el mensaje");      //disparar evento
 }
+
+*El modificador indexed está indicando que el argumento correspondiente al parámetro será indexado en el registro de eventos. 
+Permitiendo que dicho valor se pueda utilizar como criterio de búsqueda
 
 Errors:
 Función es similar a la de los eventos, con la diferencia de que estos pueden revertir los cambios de estado hecho.
