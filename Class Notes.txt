@@ -5,6 +5,9 @@ Tipos de variables:
 -uint (enteros no negativos) / int (enteros pueden negativos).
 -address / address payable (Para que una dirección pueda recibir Ether).
 
+address(0) = "0x0000000000000000000000000000000000000000" se utiliza en Solidity para representar la dirección nula o cero, 
+ya sea para inicializar variables de dirección o realizar comprobaciones en el contrato.
+
 
 Variables globales:
 -block: Información del bloque actual de la transacción.

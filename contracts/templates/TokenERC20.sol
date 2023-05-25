@@ -9,7 +9,9 @@ contract TokenERC20 {
     uint8 private decimals;
     uint private totalSupply;
 
-    mapping(address => uint) private balances;    
+    //owner => amount
+    mapping(address => uint) private balances;   
+    //owner => spender => amount
     mapping(address => mapping(address => uint)) private allowances;
 
     constructor (string memory _name, string memory _symbol, uint8 _decimals, uint _totalSupply){
