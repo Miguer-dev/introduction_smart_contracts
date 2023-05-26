@@ -1,5 +1,9 @@
+*https://docs.soliditylang.org/
+
+
 -------------------------------------------------------------------Contract-------------------------------------------------------
 
+// SPDX-License-Identifier: GPL-3.0
 pragma solidity <version>;  //Ej >=0.7.0 <9.0.0
 
 contract <name>
@@ -13,12 +17,16 @@ contract <name>
   //doSomething
 }
 
+
+*https://spdx.org/licenses/
+
 -------------------------------------------------------------------Variables------------------------------------------------------
 Tipos de variables:
--bool
--string
--uint (enteros no negativos) / int (enteros pueden negativos).
--address / address payable (Para que una dirección pueda recibir Ether).
+-bool: Verdadero o flaso
+-string: Cadena de texto
+-bytes<8-256>: Cadena de bytes
+-uint<8-256>: enteros no negativos / int<8-256>: enteros pueden negativos. Pueden opcionalmente indicar su tamaño en bits.
+-address / address payable: para que una dirección pueda recibir Ether. Guarda direcciones de ETH de 160 bits (20 bytes).
 
 address(0) = "0x0000000000000000000000000000000000000000" se utiliza en Solidity para representar la dirección nula o cero, 
 ya sea para inicializar variables de dirección o realizar comprobaciones en el contrato.
@@ -126,6 +134,12 @@ function doSomething() public {
 }
 
 -------------------------------------------------------------------Struct------------------------------------------------------
+struct <name> {
+  <type> <name>;
+  ...
+  <type> <name>;
+}
+
 
 struct Persona {
     string nombre;
@@ -141,7 +155,8 @@ p.edad;       // 35
 
 -------------------------------------------------------------------Array - Mapping------------------------------------------------------
 
-Arrays:
+Arrays: 
+<type>[] <visibility> <name>;
 
 //longitud fija
 uint[3] numbers = [1, 2, 3];
@@ -158,6 +173,7 @@ numbers.length   //longitud del array
 *Los métodos push y pop solo funcionan en los arrays dinámicos.
 
 Mapping:
+mapping(<type> => <type>) <visibility> <name>;
 
 mapping(address => uint) public balances;
 
