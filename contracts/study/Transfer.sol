@@ -2,12 +2,23 @@
 
 pragma solidity >=0.8.2 <0.9.0;
 
-contract Fund {
-
-    address private ownAdderss = 0x583031D1113aD414F02576BD6afaBfb302140225;
-
-    function sendEthers (address payable receiver) public  payable{
-        receiver.transfer(msg.value);
+contract Transferencia {
+    
+    constructor() payable {
+        
     }
     
+    function transferenciaPorSend(address destino, uint monto) public returns(bool) {
+        bool salida = payable(destino).send(monto);
+        return salida;
+    }
+    
+    function transferenciaPorTransfer(address destino, uint monto) public {
+        payable(destino).transfer(monto);
+    }
+    
+    function transferenciaPorCall(address destino, uint monto) public returns (bool,bytes memory) {
+        (bool salida, bytes memory respuesta) = destino.call{value:monto, gas: 1000}("");
+        return (salida,respuesta) ;
+    }
 }
