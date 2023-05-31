@@ -1,6 +1,5 @@
 *https://docs.soliditylang.org/
 
-
 -------------------------------------------------------------------Contract-------------------------------------------------------
 
 // SPDX-License-Identifier: GPL-3.0
@@ -46,7 +45,7 @@ Propiedades más comunes:
 -tx.gasprice: Costo de gas de la transacción
 
 
-Visibilidad:
+Access Modifier:
 -public: default funciones,pueden ser accedidas tanto por fuera como por dentro del contrato.
 -private: solo podrán ser accedidas desde adentro del propio contrato.
 -internal: default variables, solo pueden ser accedidas por el mismo contrato o un contrato que deriva del mismo, contratos heredados.
@@ -54,14 +53,18 @@ Visibilidad:
 
 
 Data Location: (string, array, struct y mapping)
--storage: memoria persistente, será guardada dentro de la Blockchain.
--memory: solo pueden ser usadas mientras se llama a una función. Después de esto, la misma se borrará. Puede modificarse mientras está en uso.
--calldata: similar a memory, pero no se pueden modificar mientras estén en uso. Es buena práctica usar calldata para reducir el consumo de gas.
+-storage: memoria persistente, será guardada dentro de la Blockchain. Es el más COSTOSO. Similar a la memoria ROM
+-memory: variables temporales durante ejecución. Se asimila a la RAM
+-calldata: son constantes definidas en el entorno de ejecución de una variable. No son modificables.. Es buena práctica usar calldata para reducir el consumo de gas.
 
 *Las variables de estado del contrato son guardadas en el storage, mientras que los parámetros de una función son guardados en memory.
 
 -------------------------------------------------------------------Funciones------------------------------------------------------
 Estructura Funciones:
+function <name>(<type> <parameter>..., [..., ]>) <access modifiers> <mutability modifiers> <user defined modifiers> <returns>(<type>) {
+    <content>
+}
+
 function multiplication(int a, int b) returns(int) {
     return a * b;
 }
@@ -70,34 +73,43 @@ function multiplication(int a, int b) returns(int product) {
 }
 
 
-Tipos:
+Mutability Modifier:
 -view: Funciones que solo leen y devuelven dato, no realizan ningún tipo de lógica. No consumen gas (getters)
 
-function saludar(int a, int b) public view returns(string) {
+    function saludar(int a, int b) public view returns(string) {
         return saludo;
     }
 
 -pure: Funciones que siempre devuelven un valor de forma determinista. Realizan una tarea y devuelven siempre el mismo valor para una misma entrada. 
 Pero no modifican el valor de ninguna variable, o sea, no cambian el estado del contrato.
 
-function multiplication(int a, int b) public pure returns(int) {
+    function multiplication(int a, int b) public pure returns(int) {
         return a * b;
     }
 
 -payable: Funciones especiales capaces de enviar o recibir ETH.
 
-function sendETH(address payable receiver) public payable {
+    function sendETH(address payable receiver) public payable {
         receiver.transfer(msg.value);
     }
 
+*View and Pure hacen que la función no cobre gas, y si se omite, se asume que es una función que escribe en el storage de la EVM
+
+-------------------------------------------------------------------Modifiers------------------------------------------------------
 
 Functions Modifiers:
 Suelen ser la validación de datos o la restricción de acceso a una función.
 
     // Modificador para validar que la llamada la realiza el dueño del contrato
     modifier onlyOwner() {
-        require(msg.sender == owner, "No eres el owner");                       //en caso la condición no se cumpla, el require realizará un revert para volver atrás todos los cambios de estado del contrato por nosotros
-        _;                                                                      //indicarle al compilador de Solidity que continúe ejecutando el resto de la función si la condición se cumplió correctamente.
+        require(msg.sender == owner, "No eres el owner");                      
+        _;                                                         //indicarle al compilador de Solidity que continúe ejecutando el resto de la función si la condición se cumplió correctamente. Se puede poner donde se desee.
+    }
+
+    modifier onlyOwner2() {
+        if(msg.sender != owner)
+            revert("No eres el owner");                                       
+        _;                                                                 
     }
 
     // Solo el dueño del proyecto puede cambiar al mismo
@@ -107,7 +119,21 @@ Suelen ser la validación de datos o la restricción de acceso a una función.
 
 *Las operaciones en Solidity son atómicas, lo que quiere decir que se ejecuta correctamente cada una de las instrucciones o no se ejecuta ninguna.
 
--------------------------------------------------------------------Eventos y Errores------------------------------------------------------
+-------------------------------------------------------------------Errores------------------------------------------------------
+Manejo de errores
+-assert: Se utiliza para pruebas, compara dos valores
+-revert: Es un error que regresa todas las modificaciones de estado realizadas durante la ejecución de la función. Recibe por parámetro un mensaje de error.
+Cualquier consumo de gas ejecutado hasta el momento de un revert se debe pagar
+-require: Es una variación del revert que recibe por parámetro una expresión booleana y revierte si esta expresión es falsa.
+
+
+error SendError(string message);
+
+function doSomething() public {
+    revert SendError("Mensaje del error");       
+}
+
+-------------------------------------------------------------------Eventos------------------------------------------------------
 
 Events:
 Se utilizan para notificar cambios realizados en un contrato. Deben ser recibidos por medio de aplicaciones Web3 que se encuentren observando el contrato.
@@ -123,15 +149,7 @@ function sendMessage() public {
 
 *El modificador indexed está indicando que el argumento correspondiente al parámetro será indexado en el registro de eventos. 
 Permitiendo que dicho valor se pueda utilizar como criterio de búsqueda
-
-Errors:
-Función es similar a la de los eventos, con la diferencia de que estos pueden revertir los cambios de estado hecho.
-
-error SendError(string message);
-
-function doSomething() public {
-    revert SendError("Mensaje del error");
-}
+*Los eventos consumen GAS.
 
 -------------------------------------------------------------------Struct------------------------------------------------------
 struct <name> {
@@ -180,6 +198,58 @@ mapping(address => uint) public balances;
 mapping[direccion123] = 1000;
 mapping[direccion456] = 2000;
 mapping[direccion123] //1000
+
+-------------------------------------------------------------------Enum------------------------------------------------------
+enum <name> { <value1>, <value2>, ... , <value3>}
+
+enum State { OPEN, PENDING, CLOSE} 
+State currentState = State.PENDING;
+
+*Los valores de los enum son una secuencia de enteros empezando por 0. (OPEN = 0, PENDING = 1, CLOSE = 2)
+
+-------------------------------------------------------------------Gas------------------------------------------------------
+El gas es una unidad de medida para el procesamiento de la EVM. Se mide en unidades de gas, y es constante para las mismas operaciones.
+
+-gasPrice: Es la cantidad de ETH que pagamos por unidad de gas. Es decir, aunque el gas sea constante, la demanda por ese gas puede subir el precio.
+-gasCost: Es la cantidad de unidades de gas que generó la ejecución
+
+BASE_FEE = gasPrice * gasCost       //Este se quema
+PRIORITY_FEE: Es el extra que se paga al minero por preferir tu transacción. Este sí va al minero.
+
+Total = BASE_FEE + PRIORITY_FEE
+
+-------------------------------------------------------------------Transferencias------------------------------------------------------
+Funciones enviar:
+-send: Envía un monto a una dirección y retorna false si la transferencia no se realiza
+-transfer: Envía un monto y revierte si no se puede realizar
+-call: Esta es más complicada, pero básicamente realiza una llamada hacia una dirección. Incluso se pueden llamar funciones de otro contrato si se le pasa 
+un address válido y la llamada dentro del parámetro data. No obstante, al ser un mensaje, puede llevar ether, y por eso se usa para envíos. 
+Retorna el resultado de la función llamada (si es que fué el caso)
+
+*Send y transfer requieren address de tipo payable, tienen un limite de gas fijo .
+*Call no tiene limite de gas por defecto, pero se puede configurar.
+
+
+Funciones recibir:
+-Receive: función opcional que se ejecuta cuando se recibe una transferencia de Ether sin parámetros. (es external obligatoriamente)
+-Fallback: función opcional que se ejecuta cuando se recibe una transferencia de Ether con parámetros. (msg.data) 
+-Función payable: se puede recibir Ether en una función si se le especifica el tipo payable.
+
+Prioridad al recibir una transferencia:
+                                                                    send Ether
+                                                                        |
+                                                                  hay parametros?                                                               
+                                                                /                \
+                                                              si                  no      
+                                                             /                      \    
+                     funcion con la firma especificada existe?                      receive() existe?               
+                            /                             \                          /             \
+                          si                              no                        no              si
+                          /                                 \                      /                  \
+             ejecuta la funcion                                 fallback existe?                    receive()
+                                                                  /          \
+                                                            fallback()      exception
+
 
 -------------------------------------------------------------------Token ERC-20------------------------------------------------------
 El estándar ERC-20 introduce tokens fungibles, es decir, tienen una propiedad que hace que cada token sea exactamente igual (en tipo y valor) que otro token.
