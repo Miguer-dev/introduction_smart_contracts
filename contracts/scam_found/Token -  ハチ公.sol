@@ -1,3 +1,8 @@
+//contract: 0x3222de1944c21f7c7b5134b4b1d585077cd075e6
+//See contract "Token - Mini Pepe" for the explanation of the scam
+
+
+
 /**
  *Submitted for verification at Etherscan.io on 2023-07-06
 */

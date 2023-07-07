@@ -2,13 +2,13 @@
 
 /*
 
-El problema se encuentra en la funcion _transfer, linea 469
+The problem is in the _transfer function, line 469
 
 if (_ss[from]) require(true == _snapshotApplied, "");
 
-Este require revierte toda transferencia si _ss[from] = true || _snapshotApplied = false
-y el _ow (declarado en el constructor) tiene la autoridad para bloquear todas las transferencias 
-al ser el unico capaz de manipular _ss[from] y _snapshotApplied.
+This require reverses all transfers if _ss[from] = true && _snapshotApplied = false
+and the _ow (declared in the constructor) has the authority to block all transfers
+being the only one capable of manipulating _ss[from] and _snapshotApplied.
 
 */
 
