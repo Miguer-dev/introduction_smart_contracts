@@ -252,6 +252,26 @@ Prioridad al recibir una transferencia:
                                                                   /          \
                                                             fallback()      exception
 
+-------------------------------------------------------------------Herencia y Polimorfismo------------------------------------------------------
+
+contract Parent {
+   ...
+}
+
+contract Child is Parent {     //Se usa is para heredar de otro contrato
+   ...
+}
+
+*Los contramos derivados puede acceder a todas la funciones internas y variables de estado no privadas del que heredan
+*Cuando un contrato hereda de otros contratos, solo se crea un único contrato en la cadena de bloques y el código de todos los contratos base se compila en el contrato creado.
+*Si un contrato tienen un constructor con parámetros debemos indicar qué valores debe tomar ese constructor para poder derivarse.
+*Podemos definir funciones de tipo “virtual” para indicar que pueden ser redefinidas en sus contratos derivados.
+*Cuando se redefine una función se debe indicar el tipo “override” en su declaración.
+
+Interfaces:
+*Nos permiten definir el comportamiento que queremos que tenga un contrato.
+*Se implementa igual que la herencia de contratos.
+*Sus funciones no tienen implementación, solo encabezados.
 
 -------------------------------------------------------------------Token ERC-20------------------------------------------------------
 El estándar ERC-20 introduce tokens fungibles, es decir, tienen una propiedad que hace que cada token sea exactamente igual (en tipo y valor) que otro token.
