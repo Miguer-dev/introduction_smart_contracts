@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity <version>;  //Ej: >=0.7.0 <9.0.0
 
-import "usuario/carpetas/archivo"   //en github Ej:“@openzeppelin/contracts/utils/math/SafeMath.sol” 
+import "usuario/carpetas/archivo";   //en github Ej:“@openzeppelin/contracts/utils/math/SafeMath.sol” 
 
-contract <name>
+contract <name> {
   
   //doSomething
 
@@ -320,3 +320,25 @@ event ApprovalForAll(address indexed _owner, address indexed _operator, bool _ap
 *https://ethereum.org/en/developers/docs/standards/tokens/erc-721/
 *https://eips.ethereum.org/EIPS/eip-721
 *https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol
+
+
+-------------------------------------------------------------------OpenZeppelin------------------------------------------------------
+Contratos interesantes a utilizar:
+
+Ownable:
+"@openzeppelin/contracts/access/Ownable.sol"
+Al heredar de este contrato, cuando se desplega el contrato hijo el msg.sender se almacena en la variable _owner. Funcionalidades que añade:
+-onlyOwner, para la verificacion que el _owner sea el que está accediendo.
+-transferOwnership(), cambia el valor del _owner.
+-renounceOwnership(), Pasa el _owner a address(0).
+
+AccessControl:
+"@openzeppelin/contracts/access/AccessControl.sol"
+Permite implementar el acceso basado en roles:
+-onlyRole(), Los roles se pueden utilizar para restringir el acceso a una funcion utilizando onlyRole.
+-grantRole() y revokeRole(), se utilizan para otorgar y revocar roles a los address. Cada rol tiene un rol de administrador asociado, y solo
+ las cuentas que tienen la función de administrador de un rol pueden llamar a estas funciones.
+-De forma predeterminada, el rol de administrador para todos los roles es `DEFAULT_ADMIN_ROLE`. Utilizando _setRoleAdmin se puede cambiar el roleAdmin de un role.
+
+
+TimelockController:
