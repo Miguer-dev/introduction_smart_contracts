@@ -338,6 +338,19 @@ event ApprovalForAll(address indexed _owner, address indexed _operator, bool _ap
 *https://eips.ethereum.org/EIPS/eip-721
 *https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol
 
+-------------------------------------------------------------------Token ERC-1155------------------------------------------------------
+Define que un contrato inteligente puede tener múltiples tokens a la vez. Los mismos conviven en el mismo contrato y pueden actuar como tokens fungibles o no-fungibles 
+según nuestra necesidad.
+
+Este resuleve varias limitaciones existentes en el ERC20 y ERC721.
+-En el estándar ERC20 pueden ocurrir pérdidas de tokens debido a que si se envía por error los mismos a direcciones inexistentes, estos serán irrecuperables.
+-El estándar ERC721 tiene sus problemas de emisión de tokens. Solo se puede emitir y transferir de a un token a la vez. 
+-El estándar ERC721, la falta de posibilidades de obtener el tokenId de un token en particular para identificar el mismo.
+-Tanto el estándar ERC20 como el ERC721, son incompatibles entre sí. Solo permiten que una colección de tokens viva dentro de un contrato.
+
+*https://ethereum.org/en/developers/docs/standards/tokens/erc-1155/
+*https://eips.ethereum.org/EIPS/eip-1155
+*https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC1155/ERC1155.sol
 
 -------------------------------------------------------------------OpenZeppelin------------------------------------------------------
 Contratos interesantes a utilizar:
