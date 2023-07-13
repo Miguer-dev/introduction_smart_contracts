@@ -61,6 +61,23 @@ Data Location: (string, array, struct y mapping)
 
 *Las variables de estado del contrato son guardadas en el storage, mientras que los parámetros de una función son guardados en memory.
 
+-------------------------------------------------------------------Unchecked -----------------------------------------------------
+
+El modificador unchecked se utiliza para desactivar las comprobaciones de desbordamiento y subdesbordamiento en las operaciones aritméticas.  Esto puede ser útil en 
+situaciones donde estás seguro de que no se producirán desbordamientos o cuando deseas optimizar el gas utilizado por tu contrato.
+
+function multiply(uint256 a, uint256 b) public pure returns (uint256) {
+    unchecked {
+        return a * b;
+    }
+}
+
+* Si se produce un desbordamiento en una operación aritmética sin el modificador unchecked, Solidity lanzará una excepción y revertirá la transacción. Esto se hace para 
+proteger la integridad de los cálculos y evitar resultados incorrectos o inesperados.
+
+*Si se produce un desbordamiento en una operación aritmética con el modificador unchecked, no se lanzará ninguna excepción. En cambio, Solidity simplemente truncará los 
+bits más significativos del resultado y utilizará el valor resultante. Esto puede conducir a resultados incorrectos o inesperados.
+
 -------------------------------------------------------------------Funciones------------------------------------------------------
 Estructura Funciones:
 function <name>(<type> <parameter>..., [..., ]>) <access modifiers> <mutability modifiers> <user defined modifiers> <returns>(<type>) {
