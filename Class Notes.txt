@@ -1,4 +1,22 @@
-*https://docs.soliditylang.org/
+                                                                ÍNDICE:
+                                                            1.  Contract
+                                                            2.  Variables
+                                                            3.  Unchecked
+                                                            4.  Funciones
+                                                            5.  Modifiers
+                                                            6.  Errores
+                                                            7.  Eventos
+                                                            8.  Struct
+                                                            9.  Array - Mapping
+                                                            10. Enum
+                                                            11. Gas
+                                                            12. Transferencias
+                                                            13. Herencia y Polimorfismo
+                                                            14. Token ERC-20
+                                                            15. Token ERC-721
+                                                            16. Token ERC-1155
+                                                            17. OpenZeppelin
+
 
 -------------------------------------------------------------------Contract-------------------------------------------------------
 
@@ -61,7 +79,7 @@ Data Location: (string, array, struct y mapping)
 
 *Las variables de estado del contrato son guardadas en el storage, mientras que los parámetros de una función son guardados en memory.
 
--------------------------------------------------------------------Unchecked -----------------------------------------------------
+-------------------------------------------------------------------Unchecked-----------------------------------------------------
 
 El modificador unchecked se utiliza para desactivar las comprobaciones de desbordamiento y subdesbordamiento en las operaciones aritméticas.  Esto puede ser útil en 
 situaciones donde estás seguro de que no se producirán desbordamientos o cuando deseas optimizar el gas utilizado por tu contrato.
@@ -270,6 +288,7 @@ Prioridad al recibir una transferencia:
                                                             fallback()      exception
 
 -------------------------------------------------------------------Herencia y Polimorfismo------------------------------------------------------
+Ejemplo: contracts/study/Herencia.sol
 
 contract Parent {
    ...
@@ -279,16 +298,37 @@ contract Child is Parent {     //Se usa is para heredar de otro contrato
    ...
 }
 
-*Los contramos derivados puede acceder a todas la funciones internas y variables de estado no privadas del que heredan
+*Los contratos derivados pueden acceder a todas la funciones internas y variables de estado no privadas del que heredan
 *Cuando un contrato hereda de otros contratos, solo se crea un único contrato en la cadena de bloques y el código de todos los contratos base se compila en el contrato creado.
 *Si un contrato tienen un constructor con parámetros debemos indicar qué valores debe tomar ese constructor para poder derivarse.
+
 *Podemos definir funciones de tipo “virtual” para indicar que pueden ser redefinidas en sus contratos derivados.
 *Cuando se redefine una función se debe indicar el tipo “override” en su declaración.
+*La palabra clave "super" permite llamar a funciones definidas en un contrato padre, incluso si se anulan. Este mecanismo se puede usar para agregar comprobaciones 
+adicionales a una función, emitir eventos o agregar funcionalidades según lo considere oportuno.
+
+Hooks:
+Son funciones especiales que se utilizan en Solidity para implementar la lógica personalizada antes o después de ciertos eventos específicos en un contrato.
+Como ejemplo tienes las funciones _beforeTokenTransfer y _afterTokenTransfer del contrato ERC20, estas funciones pueden ser override en el contrato que hereda para darle
+un comportamiento personalizado a las transferencias. Estas funciones hooks deben seguir las siguientes reglas para prevenir problemas:
+-Cada vez que se realice un override de un hook, debe aplicarsele tambien el atributo virtual. Esto permite que contratos hijos puedan agregar mas funcionalidades al hook.
+-Siempre usar super dentro del hook para llamar al hook del padre, esto nos asegura que se llamen todos los hook del arbol de herencia.
+
+function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override { // Add virtual
+        super._beforeTokenTransfer(from, to, amount); // Call parent hook
+        ...
+}
 
 Interfaces:
 *Nos permiten definir el comportamiento que queremos que tenga un contrato.
 *Se implementa igual que la herencia de contratos.
 *Sus funciones no tienen implementación, solo encabezados.
+
+Librerias:
+*Son una forma de reutilizar código y compartirlas entre múltiples contratos.  
+*Se utilizan para encapsular funcionalidades comunes que pueden ser utilizadas en diferentes contratos. 
+*Se definen utilizando la palabra clave 'library' y pueden contener funciones y tipos de datos. 
+*A diferencia de los contratos, las librerías no pueden ser desplegadas de forma independiente en la cadena de bloques, sino que se adjuntan y se usan por otros contratos.
 
 -------------------------------------------------------------------Token ERC-20------------------------------------------------------
 El estándar ERC-20 introduce tokens fungibles, es decir, tienen una propiedad que hace que cada token sea exactamente igual (en tipo y valor) que otro token.
